@@ -29,36 +29,25 @@ require([
 
   // SECTION: Create a map and map view
   // Ref: https://developers.arcgis.com/javascript/latest/display-a-map/
-  // Map: A map defines the layers that need to be displayed.
-  const map = new Map({
-    // Basemap layer
-    basemap: "arcgis-navigation",
-  });
-
+  // Global variables
   const CENTER_POINT = [21.81, 12.36];
   const GLOBAL_ZOOM = 1.7;
-
+  // Map: A map defines the layers that need to be displayed.
+  const map = new Map({
+    basemap: "arcgis-navigation",
+  });
   const view = new MapView({
-    // Map: A map defines the layers that need to be displayed.
     map: map,
-    center: CENTER_POINT, // Average x,y coordinates
-    // center: [-118.80543, 34.027], //Longitude, latitude
-
+    center: CENTER_POINT,
     zoom: GLOBAL_ZOOM,
-    // zoom: 13,
-    // scale: 72223.819286
-
-    // Set the container property to map-view to display the contents of the map.
-    container: "map-view",
-
-    // The MapView also supports a number of touch events such as click and double-click. You can use these events to change the position of the map or to find features in layers.
+    container: "map-view", // Set the HTML container property to display the contents of the map.
     constraints: {
       snapToZoom: false,
     },
     popup: {
       dockEnabled: true,
       dockOptions: {
-        // Disables the dock button from the popup
+        // Disable the dock button from the popup
         buttonEnabled: false,
         // Ignore the default sizes that trigger responsive docking
         breakpoint: false,
@@ -81,7 +70,6 @@ require([
 
   // SECTION: Toggle between basemaps
   // Ref: https://developers.arcgis.com/javascript/latest/change-the-basemap-layer/
-  // An easy way to enable selection between two basemaps is to use the Basemap Toggle widget. Use the widget to toggle between arcgis-navigation and arcgis-imagery basemaps.
   const basemapToggle = new BasemapToggle({
     view: view,
     nextBasemap: "arcgis-imagery",
@@ -89,7 +77,7 @@ require([
   });
   view.ui.add(basemapToggle, "bottom-left"); // Add to the view
 
-  // SECTION: GRM projects feature layer (points)
+  // SECTION: Style markers and labels
   // Ref: https://developers.arcgis.com/javascript/latest/style-a-feature-layer/
   // Style project feature layer
   const projectMarkers = {
@@ -102,15 +90,18 @@ require([
       xoffset: "4px",
     },
   };
+  const haloColor = "#373837";
+  const color = "#f0f0f0";
+  const haloSize = "1.5px";
 
   const projectLabels = {
     symbol: {
       type: "text",
-      color: "#FFFFFF",
-      haloColor: "#145374",
-      haloSize: "2px",
+      haloColor,
+      haloSize,
+      color,
       font: {
-        size: "10px",
+        size: "12px",
         family: "Noto Sans",
         style: "italic",
         weight: "normal",
@@ -123,8 +114,7 @@ require([
     },
   };
 
-  // SECTION: Display popup
-  // Ref: https://developers.arcgis.com/javascript/latest/display-a-pop-up/
+  // SECTION: Create a PieChart
   // Ref: https://developers.arcgis.com/javascript/latest/sample-code/popup-multipleelements/
   // Ref: https://developers.arcgis.com/javascript/latest/api-reference/esri-popup-content-PieChartMediaInfo.html
   // Create a new PieChart to display within the PopupTemplate
@@ -147,22 +137,18 @@ require([
     mediaInfos: [pieChart],
   });
 
-  const tableProjectPopup = {
+  // SECTION: Create a project popup template
+  // Ref: https://developers.arcgis.com/javascript/latest/display-a-pop-up/
+  // Create a project popup template
+  const projectPopup = {
     title: "{Proj_Status} Project by {Organisation}",
     content: [
       {
-        // You can also set a descriptive text element. This element
-        // uses an attribute from the featurelayer which displays a
-        // sentence giving the total amount of trees value within a
-        // specified census block. Text elements can only be set within the content.
-        type: "text", // TextContentElement
+        type: "text", // Text element
         text: "{Description}",
       },
       {
-        // It is also possible to set the fieldInfos outside of the content
-        // directly in the popupTemplate. If no fieldInfos is specifically set
-        // in the content, it defaults to whatever may be set within the popupTemplate.
-        type: "fields",
+        type: "fields", // Table element
         fieldInfos: [
           {
             fieldName: "Nation",
@@ -171,6 +157,22 @@ require([
           {
             fieldName: "Project_Value",
             label: "Project Value",
+            format: {
+              digitSeparator: true,
+              places: 0,
+            },
+          },
+          {
+            fieldName: "Men_Trained",
+            label: "Men Trained",
+            format: {
+              digitSeparator: true,
+              places: 0,
+            },
+          },
+          {
+            fieldName: "Women_Trained",
+            label: "Women Trained",
             format: {
               digitSeparator: true,
               places: 0,
@@ -192,40 +194,27 @@ require([
               places: 0,
             },
           },
-          {
-            fieldName: "B12001_calc_numNeverE",
-            label: "People that Never Married",
-            format: {
-              digitSeparator: true,
-              places: 0,
-            },
-          },
-          {
-            fieldName: "B12001_calc_numDivorcedE",
-            label: "People Divorced",
-            format: {
-              digitSeparator: true,
-              places: 0,
-            },
-          },
         ],
       },
-      piechartElement,
+      piechartElement, // PieChart element
       {
-        // You can set a media element within the popup as well. This
-        // can be either an image or a chart. You specify this within
-        // the mediaInfos. The following creates a pie chart in addition
-        // to two separate images. The chart is also set up to work with
-        // related tables. Similar to text elements, media can only be set within the content.
-        type: "media", // MediaContentElement
+        type: "media", // Image/Chart element
         mediaInfos: [
           {
-            // title: "<b>Logo</b>",
+            title: "<b>Trees</b>",
             type: "image",
-            // caption: "logo",
+            caption: "trees",
             value: {
               sourceURL:
                 "https://www.sunset.com/wp-content/uploads/96006df453533f4c982212b8cc7882f5-800x0-c-default.jpg",
+            },
+          },
+          {
+            title: "<b>Logo</b>",
+            type: "image",
+            caption: "logo",
+            value: {
+              sourceURL: "../images/GRM.png",
             },
           },
         ],
@@ -233,15 +222,13 @@ require([
     ],
   };
 
-  // Point Clustering
+  // SECTION: Configure point clustering
   // Ref: https://developers.arcgis.com/javascript/latest/sample-code/featurereduction-cluster/
   // Ref: https://developers.arcgis.com/javascript/latest/sample-code/featurereduction-cluster-filter-slider/
-  const haloColor = "#373837";
-  const color = "#f0f0f0";
 
   const clusterConfig = {
     type: "cluster",
-    clusterRadius: "100px",
+    clusterRadius: "120px",
     // {cluster_count} is an aggregate field containing
     // the number of features comprised by the cluster
     popupTemplate: {
@@ -257,7 +244,7 @@ require([
         },
       ],
     },
-    clusterMinSize: "24px",
+    clusterMinSize: "30px",
     clusterMaxSize: "60px",
     labelingInfo: [
       {
@@ -268,28 +255,26 @@ require([
         symbol: {
           type: "text",
           haloColor,
-          haloSize: "1px",
+          haloSize,
           color,
           font: {
             weight: "bold",
             family: "Noto Sans",
             size: "20px",
           },
-          border: {
-            borderColor: "#000000",
-            borderRadius: "1px",
-          },
         },
         labelPlacement: "center-center",
       },
     ],
   };
-
+  // SECTION: Create a project point layer
   // Create the projects feature layer and set the renderer, labels, popup template.
   const projectLayer = new FeatureLayer({
     url: "https://services9.arcgis.com/h8H4fa0wsbwmIt3l/arcgis/rest/services/GRM_Projects/FeatureServer/0",
     renderer: projectMarkers,
     labelingInfo: [projectLabels],
+    popupTemplate: projectPopup,
+    featureReduction: clusterConfig,
     outFields: [
       "Nation",
       "Organisation",
@@ -306,45 +291,53 @@ require([
       "Tree_Density",
       "Practice",
     ],
-    popupTemplate: tableProjectPopup,
-    featureReduction: clusterConfig,
   });
 
-  map.add(projectLayer);
+  map.add(projectLayer); // Add project layer to map
 
-  // SECTION: Zoom To Selected Point
+  // SECTION: Zoom to a selected graphic element
   // Ref: https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#goTo
   // Ref: https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#HitTestResult
   // NOTE: Need to read more about hitTest
 
-  const projectDataElement = document.querySelector(".project-data");
-
-  // go to point at LOD 15 with custom duration
-  let opts = {
+  // Go to point at LOD 15 with custom duration
+  const opts = {
     duration: 1000, // Duration of animation will be 5 seconds
   };
 
-  // Get the screen point from the view's click event
+  const projectDataElement = document.querySelector(".project-data");
+
+  // Get the data from the click event
   view.on("click", function (event) {
-    // Search for graphics at the clicked location. View events can be used
-    // as screen locations as they expose an x,y coordinate that conforms
-    // to the ScreenPoint definition.
+    // Get the clicked coordinates
+    const mapPoint = event.mapPoint;
+    console.log("view.zoom", view.zoom);
+    console.log("event", event);
+    console.log("mapPoint", mapPoint);
+    console.log(`x: ${mapPoint.longitude}, y: ${mapPoint.latitude}`);
+
     view.hitTest(event).then(function (response) {
-      console.log(response.results);
-
-      if (response.results.length === 2) {
+      console.log("response.results", response.results);
+      // Check if clicked on graphic
+      if (response.results.length >= 2) {
         const projectData = response.results[0].graphic.attributes;
-
-        // do something with the result graphic
-        console.log(projectData);
+        console.log("projectData", projectData);
+        // Check if the graphic element is a cluster
         if (Object.keys(projectData).includes("clusterId")) {
+          view.goTo(
+            {
+              center: [mapPoint.longitude, mapPoint.latitude],
+              zoom: view.zoom + 1,
+            },
+            opts
+          );
           return;
         }
         // Zoom to selected point
         view.goTo(
           {
             center: [projectData.x, projectData.y],
-            zoom: 4,
+            zoom: 11,
           },
           opts
         );
@@ -389,6 +382,7 @@ require([
       hide = false;
     }
   });
+
   // SECTION: Reset Map View Button
   const resetMapViewButton = document.querySelector(".reset-view-btn");
   resetMapViewButton.addEventListener("click", function () {
