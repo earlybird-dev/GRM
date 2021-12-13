@@ -96,9 +96,10 @@ require([
     type: "simple",
     symbol: {
       type: "picture-marker",
-      url: "http://static.arcgis.com/images/Symbols/NPS/npsPictograph_0231b.png",
-      width: "18px",
-      height: "18px",
+      url: "https://i.ibb.co/JHfPVcL/leaf.png",
+      width: "20px",
+      height: "20px",
+      xoffset: "4px",
     },
   };
 
@@ -232,6 +233,58 @@ require([
     ],
   };
 
+  // Point Clustering
+  // Ref: https://developers.arcgis.com/javascript/latest/sample-code/featurereduction-cluster/
+  // Ref: https://developers.arcgis.com/javascript/latest/sample-code/featurereduction-cluster-filter-slider/
+  const haloColor = "#373837";
+  const color = "#f0f0f0";
+
+  const clusterConfig = {
+    type: "cluster",
+    clusterRadius: "100px",
+    // {cluster_count} is an aggregate field containing
+    // the number of features comprised by the cluster
+    popupTemplate: {
+      title: "Cluster summary",
+      content: "This cluster represents {cluster_count} project sites.",
+      fieldInfos: [
+        {
+          fieldName: "cluster_count",
+          format: {
+            places: 0,
+            digitSeparator: true,
+          },
+        },
+      ],
+    },
+    clusterMinSize: "24px",
+    clusterMaxSize: "60px",
+    labelingInfo: [
+      {
+        deconflictionStrategy: "none",
+        labelExpressionInfo: {
+          expression: "Text($feature.cluster_count, '#,###')",
+        },
+        symbol: {
+          type: "text",
+          haloColor,
+          haloSize: "1px",
+          color,
+          font: {
+            weight: "bold",
+            family: "Noto Sans",
+            size: "20px",
+          },
+          border: {
+            borderColor: "#000000",
+            borderRadius: "1px",
+          },
+        },
+        labelPlacement: "center-center",
+      },
+    ],
+  };
+
   // Create the projects feature layer and set the renderer, labels, popup template.
   const projectLayer = new FeatureLayer({
     url: "https://services9.arcgis.com/h8H4fa0wsbwmIt3l/arcgis/rest/services/GRM_Projects/FeatureServer/0",
@@ -240,13 +293,21 @@ require([
     outFields: [
       "Nation",
       "Organisation",
-      "Proj_Code",
-      "Site_Code",
-      "Project_Description",
+      "Description",
       "x",
       "y",
+      "Proj_Status",
+      "Donor_Principal",
+      "Implementing_Partners",
+      "Start_Year",
+      "End_Year",
+      "Land_Area",
+      "Trees_mgmt",
+      "Tree_Density",
+      "Practice",
     ],
     popupTemplate: tableProjectPopup,
+    featureReduction: clusterConfig,
   });
 
   map.add(projectLayer);
@@ -255,6 +316,8 @@ require([
   // Ref: https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#goTo
   // Ref: https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#HitTestResult
   // NOTE: Need to read more about hitTest
+
+  const projectDataElement = document.querySelector(".project-data");
 
   // go to point at LOD 15 with custom duration
   let opts = {
@@ -270,18 +333,44 @@ require([
       console.log(response.results);
 
       if (response.results.length === 2) {
-        let graphic = response.results[0].graphic;
+        const projectData = response.results[0].graphic.attributes;
 
         // do something with the result graphic
-        console.log(response.results[0].graphic.attributes);
+        console.log(projectData);
+        if (Object.keys(projectData).includes("clusterId")) {
+          return;
+        }
         // Zoom to selected point
         view.goTo(
           {
-            center: [graphic.attributes.x, graphic.attributes.y],
+            center: [projectData.x, projectData.y],
             zoom: 4,
           },
           opts
         );
+
+        // Display project data in the project tab
+        projectDataElement.innerHTML = "";
+        const header = document.createElement("h2");
+        header.innerHTML = "About Project";
+        projectDataElement.appendChild(header);
+
+        const ignoredFields = ["ObjectId", "Proj_Code", "x", "y"];
+        Object.entries(projectData).forEach(function (item) {
+          const [key, value] = item;
+          if (ignoredFields.includes(key)) {
+            return;
+          }
+          if (!value) {
+            return;
+          }
+          const subHeader = document.createElement("h3");
+          const content = document.createElement("p");
+          subHeader.innerHTML = key;
+          content.innerHTML = value;
+          projectDataElement.appendChild(subHeader);
+          projectDataElement.appendChild(content);
+        });
       }
     });
   });
@@ -303,7 +392,7 @@ require([
   // SECTION: Reset Map View Button
   const resetMapViewButton = document.querySelector(".reset-view-btn");
   resetMapViewButton.addEventListener("click", function () {
-    console.log("Clicked");
+    projectDataElement.innerHTML = "";
     view.goTo(
       {
         center: CENTER_POINT,
