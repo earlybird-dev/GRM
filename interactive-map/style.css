@@ -8,6 +8,10 @@ body {
   box-sizing: border-box;
 }
 
+p {
+  line-height: 20px;
+}
+
 /* .navbar {
   width: 100%;
   height: 5%;

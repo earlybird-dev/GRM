@@ -231,19 +231,19 @@ require([
     clusterRadius: "120px",
     // {cluster_count} is an aggregate field containing
     // the number of features comprised by the cluster
-    popupTemplate: {
-      title: "Cluster summary",
-      content: "This cluster represents {cluster_count} project sites.",
-      fieldInfos: [
-        {
-          fieldName: "cluster_count",
-          format: {
-            places: 0,
-            digitSeparator: true,
-          },
-        },
-      ],
-    },
+    // popupTemplate: {
+    //   title: "Cluster summary",
+    //   content: "This cluster represents {cluster_count} project sites.",
+    //   fieldInfos: [
+    //     {
+    //       fieldName: "cluster_count",
+    //       format: {
+    //         places: 0,
+    //         digitSeparator: true,
+    //       },
+    //     },
+    //   ],
+    // },
     clusterMinSize: "30px",
     clusterMaxSize: "60px",
     labelingInfo: [
@@ -327,7 +327,7 @@ require([
           view.goTo(
             {
               center: [mapPoint.longitude, mapPoint.latitude],
-              zoom: view.zoom + 1,
+              zoom: view.zoom + 1.3,
             },
             opts
           );
@@ -386,7 +386,14 @@ require([
   // SECTION: Reset Map View Button
   const resetMapViewButton = document.querySelector(".reset-view-btn");
   resetMapViewButton.addEventListener("click", function () {
-    projectDataElement.innerHTML = "";
+    projectDataElement.innerHTML = `<h2>GRM Interactive Dashboard</h2>
+    <p>
+      A key focus of the GRM is to provide clear visibility to existing
+      and planned land restoration projects. Through the integration of
+      a broad range of data from restoration at multiple scales, we aim
+      to increase accessibility and strengthen capacity for greater
+      collaboration, knowledge sharing, and impact on the ground.
+    </p>`;
     view.goTo(
       {
         center: CENTER_POINT,
