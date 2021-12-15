@@ -34,7 +34,8 @@ require([
   const GLOBAL_ZOOM = 1.7;
   // Map: A map defines the layers that need to be displayed.
   const map = new Map({
-    basemap: "arcgis-navigation",
+    // basemap: "arcgis-navigation",
+    basemap: "streets-night-vector",
   });
   const view = new MapView({
     map: map,
@@ -72,7 +73,7 @@ require([
   // Ref: https://developers.arcgis.com/javascript/latest/change-the-basemap-layer/
   const basemapToggle = new BasemapToggle({
     view: view,
-    nextBasemap: "arcgis-imagery",
+    nextBasemap: "streets-vector",
     label: "Toggle Between Basemaps",
   });
   view.ui.add(basemapToggle, "bottom-left"); // Add to the view
@@ -228,7 +229,7 @@ require([
 
   const clusterConfig = {
     type: "cluster",
-    clusterRadius: "120px",
+    clusterRadius: "80px",
     // {cluster_count} is an aggregate field containing
     // the number of features comprised by the cluster
     // popupTemplate: {
@@ -327,7 +328,7 @@ require([
           view.goTo(
             {
               center: [mapPoint.longitude, mapPoint.latitude],
-              zoom: view.zoom + 1.3,
+              zoom: view.zoom + 1.5,
             },
             opts
           );
@@ -337,7 +338,7 @@ require([
         view.goTo(
           {
             center: [projectData.x, projectData.y],
-            zoom: 11,
+            zoom: 13,
           },
           opts
         );
