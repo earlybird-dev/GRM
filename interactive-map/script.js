@@ -88,8 +88,46 @@ require([
       url: "https://i.ibb.co/JHfPVcL/leaf.png",
       width: "20px",
       height: "20px",
-      xoffset: "4px",
+      //   xoffset: "10px",
     },
+    visualVariables: [
+      {
+        // type: "rotation",
+        // // Use {cluster_avg_WIND_DIRECT} in the
+        // // featureReduction.popupTemplate to
+        // // display the average temperature of all
+        // // features within the cluster
+        // field: "WIND_DIRECT",
+        // rotationType: "geographic",
+      },
+      //   {
+      //     type: "size",
+      //     // Use {cluster_avg_WIND_SPEED} in the
+      //     // featureReduction.popupTemplate to
+      //     // display the average temperature of all
+      //     // features within the cluster
+      //     field: "Trees_mgmt",
+      //     minDataValue: 0,
+      //     maxDataValue: 500000,
+      //     minSize: 8,
+      //     maxSize: 12,
+      //   },
+      {
+        type: "color",
+        // Use {cluster_avg_TEMP} in the
+        // featureReduction.popupTemplate to
+        // display the average temperature of all
+        // features within the cluster
+        field: "DirectBeneficiaries_HH",
+        stops: [
+          { value: 12500, color: "#fbfd00" },
+          { value: 25000, color: "#94c507" },
+          { value: 50000, color: "#649200" },
+          { value: 100000, color: "#517601" },
+          { value: 200000, color: "#1f4700" },
+        ],
+      },
+    ],
   };
   const haloColor = "#373837";
   const color = "#f0f0f0";
@@ -158,6 +196,14 @@ require([
           {
             fieldName: "Project_Value",
             label: "Project Value",
+            format: {
+              digitSeparator: true,
+              places: 0,
+            },
+          },
+          {
+            fieldName: "Trees_mgmt",
+            label: "Tree Management",
             format: {
               digitSeparator: true,
               places: 0,
