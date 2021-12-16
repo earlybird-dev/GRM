@@ -32,6 +32,7 @@ require([
   // Global variables
   const CENTER_POINT = [21.81, 12.36];
   const GLOBAL_ZOOM = 1.7;
+  const GLOBAL_SCALE = 7777;
   // Map: A map defines the layers that need to be displayed.
   const map = new Map({
     // basemap: "arcgis-navigation",
@@ -41,9 +42,19 @@ require([
     map: map,
     center: CENTER_POINT,
     zoom: GLOBAL_ZOOM,
+    // scale: GLOBAL_SCALE,
     container: "map-view", // Set the HTML container property to display the contents of the map.
     constraints: {
       snapToZoom: false,
+      minScale: 250000000, // User cannot zoom out beyond a scale of 1:250,000,000
+      //   maxScale: 0, // User can overzoom tiles
+    },
+    highlightOptions: {
+      color: "orange",
+    },
+    background: {
+      // autocasts new ColorBackground()
+      color: "#145374", // autocasts as new Color()
     },
     popup: {
       dockEnabled: true,
@@ -55,6 +66,8 @@ require([
       },
     },
   });
+
+  //   map.setHorizontalMapRepetitionEnabled(true);
 
   // SECTION: Locate your geolocation
   // Ref: https://developers.arcgis.com/javascript/latest/display-your-location/
@@ -74,6 +87,7 @@ require([
   const basemapToggle = new BasemapToggle({
     view: view,
     nextBasemap: "streets-vector",
+
     label: "Toggle Between Basemaps",
   });
   view.ui.add(basemapToggle, "bottom-left"); // Add to the view
