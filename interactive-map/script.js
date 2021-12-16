@@ -50,12 +50,15 @@ require([
       //   maxScale: 0, // User can overzoom tiles
     },
     highlightOptions: {
-      color: "orange",
+      color: [255, 255, 0, 1],
+      haloOpacity: 0.9,
+      fillOpacity: 0.2,
     },
     background: {
       // autocasts new ColorBackground()
       color: "#145374", // autocasts as new Color()
     },
+    // resizing: true,
     popup: {
       dockEnabled: true,
       dockOptions: {
@@ -66,8 +69,6 @@ require([
       },
     },
   });
-
-  //   map.setHorizontalMapRepetitionEnabled(true);
 
   // SECTION: Locate your geolocation
   // Ref: https://developers.arcgis.com/javascript/latest/display-your-location/
@@ -105,15 +106,6 @@ require([
       //   xoffset: "10px",
     },
     visualVariables: [
-      {
-        // type: "rotation",
-        // // Use {cluster_avg_WIND_DIRECT} in the
-        // // featureReduction.popupTemplate to
-        // // display the average temperature of all
-        // // features within the cluster
-        // field: "WIND_DIRECT",
-        // rotationType: "geographic",
-      },
       //   {
       //     type: "size",
       //     // Use {cluster_avg_WIND_SPEED} in the
@@ -355,6 +347,98 @@ require([
   });
 
   map.add(projectLayer); // Add project layer to map
+
+  // SECTION: Access featyres with pointer events
+  // Ref: https://developers.arcgis.com/javascript/latest/sample-code/view-hittest/
+  // SECTION: Highlight points with pointer events
+  // Ref: https://developers.arcgis.com/javascript/latest/sample-code/view-hittest/
+  view
+    .when()
+    .then(() => {
+      return projectLayer.when();
+    })
+    .then((layer) => {
+      const renderer = layer.renderer.clone();
+      //   renderer.symbol.width = 3;
+      //   renderer.symbol.color = [128, 128, 128, 0.8];
+      layer.renderer = renderer;
+
+      // Set up an event handler for pointer-down (mobile)
+      // and pointer-move events (mouse)
+      // and retrieve the screen x, y coordinates
+
+      return view.whenLayerView(layer);
+    })
+    .then((layerView) => {
+      view.on("pointer-move", eventHandler);
+      view.on("pointer-down", eventHandler);
+
+      function eventHandler(event) {
+        // only include graphics from hurricanesLayer in the hitTest
+        const opts = {
+          include: projectLayer,
+        };
+        // the hitTest() checks to see if any graphics from the hurricanesLayer
+        // intersect the x, y coordinates of the pointer
+        view.hitTest(event, opts).then(getGraphics);
+      }
+
+      let highlight, currentProject;
+
+      function getGraphics(response) {
+        // the topmost graphic from the hurricanesLayer
+        // and display select attribute values from the
+        // graphic to the user
+        if (response.results.length) {
+          const graphic = response.results[0].graphic;
+          const attributes = graphic.attributes;
+          console.log(attributes);
+          if (Object.keys(attributes).includes("clusterId")) {
+            console.log("Cluster");
+            return;
+          }
+          const projectStatus = attributes.Proj_Status;
+          const projectCode = attributes.Proj_Code;
+          const id = attributes.OBJECTID;
+
+          if (highlight && currentProject !== projectCode) {
+            highlight.remove();
+            highlight = null;
+            return;
+          }
+
+          if (highlight) {
+            return;
+          }
+
+          document.getElementById("project-info").style.visibility = "visible";
+          document.getElementById("project-code").innerHTML =
+            "Project Code: " + projectCode;
+          document.getElementById("project-status").innerHTML =
+            "Status: " + projectStatus;
+
+          // highlight all features belonging to the same hurricane as the feature
+          // returned from the hitTest
+          const query = layerView.createQuery();
+          query.where = "Proj_Code = '" + projectCode + "'";
+          layerView.queryObjectIds(query).then((ids) => {
+            if (highlight) {
+              highlight.remove();
+            }
+            highlight = layerView.highlight(ids);
+            currentProject = projectCode;
+          });
+        } else {
+          // remove the highlight if no features are
+          // returned from the hitTest
+          if (highlight) {
+            highlight.remove();
+            highlight = null;
+          }
+          document.getElementById("project-info").style.visibility = "hidden";
+        }
+      }
+    });
 
   // SECTION: Zoom to a selected graphic element
   // Ref: https://developers.arcgis.com/javascript/latest/api-reference/esri-views-MapView.html#goTo
