@@ -81,7 +81,7 @@ require([
       return view.goTo(options.target);
     },
   });
-  view.ui.add(locate, 'top-left'); // Add to the view
+  //   view.ui.add(locate, 'top-left'); // Add to the view
 
   // SECTION: Toggle between basemaps
   // Ref: https://developers.arcgis.com/javascript/latest/change-the-basemap-layer/
@@ -518,18 +518,12 @@ require([
   });
 
   // SECTION: Hide/Show Project Button
-  const hideProjectButton = document.querySelector('.hide-tab-btn');
-  let hide = false;
-  hideProjectButton.addEventListener('click', function () {
-    if (!hide) {
-      document.querySelector('.sidebar-container').classList.add('hidden');
-      hideProjectButton.innerHTML = 'Show Project Tab';
-      hide = true;
-    } else {
-      document.querySelector('.sidebar-container').classList.remove('hidden');
-      hideProjectButton.innerHTML = 'Hide Project Tab';
-      hide = false;
-    }
+  const sidebarButton = document.querySelector('.sidebar-btn');
+  const sidebarContainer = document.querySelector('.sidebar-container');
+  const fasIcon = document.querySelector('.fa-thin');
+  sidebarButton.addEventListener('click', function () {
+    sidebarContainer.classList.toggle('hidden');
+    fasIcon.classList.toggle('flip');
   });
 
   // SECTION: Reset Map View Button

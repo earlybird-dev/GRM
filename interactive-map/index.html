@@ -9,6 +9,14 @@
       rel="stylesheet"
       href="https://js.arcgis.com/4.22/esri/themes/light/main.css"
     />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="style.css" />
     <script src="https://js.arcgis.com/4.22/"></script>
   </head>
@@ -41,11 +49,12 @@
             <span id="project-status"></span> <br />
             <span id="sites"></span> <br />
           </div>
-          <button type="button" class="btn reset-view-btn">
-            Reset Map View
+          <button title="Show / Hide Sidebar" class="btn sidebar-btn">
+            <i class="fas fa-thin fa-angles-right flip"></i>
+            <!-- <i class="fas fa-thin fa-angles-right hidden"></i> -->
           </button>
-          <button type="button" class="btn hide-tab-btn">
-            Hide Project Tab
+          <button title="Reset MapView" class="btn reset-view-btn">
+            <i class="fas fa-undo"></i>
           </button>
         </div>
       </div>
