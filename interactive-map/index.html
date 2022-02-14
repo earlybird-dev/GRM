@@ -4,21 +4,27 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Display a Map with Projects</title>
+    <title>GRM Interactive Map</title>
     <link
       rel="stylesheet"
       href="https://js.arcgis.com/4.22/esri/themes/light/main.css"
     />
     <link rel="stylesheet" href="style.css" />
     <script src="https://js.arcgis.com/4.22/"></script>
-    <script src="script.js"></script>
   </head>
   <body>
-    <div class="body-view">
-      <div style="background: #145374" class="grid-box">
-        <div class="abt-project hidden">
-          <img src="../images/GRM.png" alt="GRM" style="width: 100%" />
-          <div class="project-data" style="padding-bottom: 20px">
+    <nav>
+      <ul>
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </nav>
+    <main>
+      <div class="main-container">
+        <div class="sidebar-container">
+          <img src="../images/GRM.png" alt="GRM" />
+          <div class="project-data">
             <h2>GRM Interactive Dashboard</h2>
             <p>
               A key focus of the GRM is to provide clear visibility to existing
@@ -29,12 +35,11 @@
             </p>
           </div>
         </div>
-      </div>
-      <div class="gen-flex">
-        <div id="map-view">
-          <div id="project-info">
+        <div class="map-container" id="map-container">
+          <div class="project-info">
             <span id="project-code"></span> <br />
             <span id="project-status"></span> <br />
+            <span id="sites"></span> <br />
           </div>
 
           <button type="button" class="btn hide-tab-btn">
@@ -45,6 +50,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </main>
+    <script src="script.js"></script>
   </body>
 </html>
