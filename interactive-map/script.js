@@ -505,7 +505,7 @@ require([
           if (key === 'Pic_url') {
             value
               ? (projectImage.src = value)
-              : (projectImage.src = '../images/no-image.png');
+              : (projectImage.src = '../images/no-image-available.jpg');
           }
 
           if (ignoredFields.includes(key)) {
