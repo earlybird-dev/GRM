@@ -343,6 +343,7 @@ require([
       'Trees_mgmt',
       'Tree_Density',
       'Practice',
+      'Pic_url',
     ],
   });
 
@@ -455,7 +456,7 @@ require([
   };
 
   const projectDataElement = document.querySelector('.project-data');
-
+  const projectImage = document.querySelector('.sidebar-container img');
   // Get the data from the click event
   view.on('click', function (event) {
     // Get the clicked coordinates
@@ -493,19 +494,28 @@ require([
 
         // Display project data in the project tab
         projectDataElement.innerHTML = '';
+        projectImage.src = '';
         const header = document.createElement('h2');
         header.innerHTML = 'About Project';
         projectDataElement.appendChild(header);
 
-        const ignoredFields = ['ObjectId', 'Proj_Code', 'x', 'y'];
+        const ignoredFields = ['ObjectId', 'Proj_Code', 'x', 'y', 'Pic_url'];
         Object.entries(projectData).forEach(function (item) {
           const [key, value] = item;
+          if (key === 'Pic_url') {
+            value
+              ? (projectImage.src = value)
+              : (projectImage.src = '../images/no-image.png');
+          }
+
           if (ignoredFields.includes(key)) {
             return;
           }
+
           if (!value) {
             return;
           }
+
           const subHeader = document.createElement('h3');
           const content = document.createElement('p');
           subHeader.innerHTML = key;
@@ -529,6 +539,7 @@ require([
   // SECTION: Reset Map View Button
   const resetMapViewButton = document.querySelector('.reset-view-btn');
   resetMapViewButton.addEventListener('click', function () {
+    projectImage.src = '../images/GRM.png';
     projectDataElement.innerHTML = `<h2>GRM Interactive Dashboard</h2>
     <p>
       A key focus of the GRM is to provide clear visibility to existing
