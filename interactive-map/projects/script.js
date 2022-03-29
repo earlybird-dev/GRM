@@ -498,14 +498,14 @@ require([
         const header = document.createElement('h2');
         header.innerHTML = 'About Project';
         projectDataElement.appendChild(header);
-        const projectLink = document.createElement('a');
-        projectLink.href = `http://127.0.0.1:5500/interactive-map/projects/?id=${projectData.ObjectId}`;
+        // const projectLink = document.createElement('a');
+        // projectLink.href = `http://127.0.0.1:5500/interactive-map/?id=${projectData.ObjectId}`;
         // projectLink.target = '_blank';
-        const projectDetailsBtn = document.createElement('button');
-        projectDetailsBtn.innerHTML = 'Project Details';
-        projectDetailsBtn.classList.add('see-project-page-btn');
-        projectLink.appendChild(projectDetailsBtn);
-        projectDataElement.appendChild(projectLink);
+        // const projectDetailsBtn = document.createElement('button');
+        // projectDetailsBtn.innerHTML = 'Project Details';
+        // projectDetailsBtn.classList.add('see-project-page-btn');
+        // projectLink.appendChild(projectDetailsBtn);
+        // projectDataElement.appendChild(projectLink);
 
         const ignoredFields = [
           'Nation',
@@ -554,71 +554,84 @@ require([
   });
 
   //SECTION: Get the Parameter Values
-  //   const params = new URLSearchParams(window.location.search);
-  //   const projectID = params.get('id');
-  //   console.log(projectID);
+  const params = new URLSearchParams(window.location.search);
+  const projectID = params.get('id');
+  console.log(projectID);
 
-  //   const displayProjectData = (data) => {
-  //     const ignoredFields = [];
-  //     projectDataElement.innerHTML = '';
-  //     Object.entries(data).forEach(function (item) {
-  //       const [key, value] = item;
-  //       if (key === 'Pic_url') {
-  //         value
-  //           ? (projectImage.src = value)
-  //           : (projectImage.src = '../images/no-image-available.jpg');
-  //       }
+  const displayProjectData = (data) => {
+    // Zoom to selected point
 
-  //       if (ignoredFields.includes(key)) {
-  //         return;
-  //       }
+    const opts = {
+      duration: 3000, // Duration of animation will be 5 seconds
+    };
 
-  //       if (!value) {
-  //         return;
-  //       }
+    view.goTo(
+      {
+        center: [data.x, data.y],
+        zoom: 13,
+      },
+      opts
+    );
+    const ignoredFields = [];
+    projectDataElement.innerHTML = '';
+    Object.entries(data).forEach(function (item) {
+      const [key, value] = item;
+      if (key === 'Pic_url') {
+        value
+          ? (projectImage.src = value)
+          : (projectImage.src = '../images/no-image-available.jpg');
+      }
 
-  //       const subHeader = document.createElement('h3');
-  //       const content = document.createElement('p');
-  //       subHeader.innerHTML = key;
-  //       content.innerHTML = value;
-  //       projectDataElement.appendChild(subHeader);
-  //       projectDataElement.appendChild(content);
-  //     });
-  //   };
+      if (ignoredFields.includes(key)) {
+        return;
+      }
 
-  //   const getProjectData = async (id) => {
-  //     const displayFields = [
-  //       'Description',
-  //       'Nation',
-  //       'Organisation',
-  //       'DirectBeneficiaries_HH',
-  //       'x',
-  //       'y',
-  //       'Proj_Status',
-  //       'Proj_Code',
-  //       'Donor_Principal',
-  //       'Implementing_Partners',
-  //       'Start_Year',
-  //       'End_Year',
-  //       'Land_Area',
-  //       'Trees_mgmt',
-  //       'Tree_Density',
-  //       'Practice',
-  //       'Pic_url',
-  //     ];
+      if (!value) {
+        return;
+      }
 
-  //     const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId=${projectID}&outFields=${displayFields.join()}&f=json`;
+      const subHeader = document.createElement('h3');
+      const content = document.createElement('p');
+      subHeader.innerHTML = key;
+      content.innerHTML = value;
+      projectDataElement.appendChild(subHeader);
+      projectDataElement.appendChild(content);
+    });
+  };
 
-  //     const response = await fetch(apiURL);
-  //     const data = await response.json();
-  //     const projectData = data.features[0].attributes;
-  //     console.log('response heeee', projectData);
+  const getProjectData = async (id) => {
+    const displayFields = [
+      'Description',
+      'Nation',
+      'Organisation',
+      'DirectBeneficiaries_HH',
+      'x',
+      'y',
+      'Proj_Status',
+      'Proj_Code',
+      'Donor_Principal',
+      'Implementing_Partners',
+      'Start_Year',
+      'End_Year',
+      'Land_Area',
+      'Trees_mgmt',
+      'Tree_Density',
+      'Practice',
+      'Pic_url',
+    ];
 
-  //     displayProjectData(projectData);
-  //   };
+    const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId=${projectID}&outFields=${displayFields.join()}&f=json`;
 
-  //   const projectData = getProjectData(projectID);
-  //   console.log(projectData);
+    const response = await fetch(apiURL);
+    const data = await response.json();
+    const projectData = data.features[0].attributes;
+    console.log('response heeee', projectData);
+
+    displayProjectData(projectData);
+  };
+
+  const projectData = getProjectData(projectID);
+  console.log(projectData);
 
   // SECTION: Hide/Show Project Button
   const sidebarButton = document.querySelector('.sidebar-btn');
