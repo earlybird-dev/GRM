@@ -326,7 +326,7 @@ require([
     url: 'https://services9.arcgis.com/h8H4fa0wsbwmIt3l/arcgis/rest/services/GRM_Projects/FeatureServer/0',
     renderer: projectMarkers,
     labelingInfo: [projectLabels],
-    popupTemplate: projectPopup,
+    // popupTemplate: projectPopup,
     featureReduction: clusterConfig,
     outFields: [
       'Nation',
@@ -455,7 +455,7 @@ require([
     duration: 1000, // Duration of animation will be 5 seconds
   };
 
-  const projectDataElement = document.querySelector('.project-data');
+  const projectDataContainer = document.querySelector('.project-data');
   const projectImage = document.querySelector('.sidebar-container img');
   // Get the data from the click event
   view.on('click', function (event) {
@@ -493,70 +493,81 @@ require([
         );
 
         // Display project data in the project tab
-        projectDataElement.innerHTML = '';
+        projectDataContainer.innerHTML = '';
         projectImage.src = '';
         const header = document.createElement('h2');
         header.innerHTML = 'About Project';
-        projectDataElement.appendChild(header);
-        // const projectLink = document.createElement('a');
-        // projectLink.href = `http://127.0.0.1:5500/interactive-map/?id=${projectData.ObjectId}`;
-        // projectLink.target = '_blank';
-        // const projectDetailsBtn = document.createElement('button');
-        // projectDetailsBtn.innerHTML = 'Project Details';
-        // projectDetailsBtn.classList.add('see-project-page-btn');
-        // projectLink.appendChild(projectDetailsBtn);
-        // projectDataElement.appendChild(projectLink);
+        projectDataContainer.appendChild(header);
 
-        const ignoredFields = [
-          'Nation',
-          'Organisation',
-          'DirectBeneficiaries_HH',
-          'x',
-          'y',
-          'Proj_Status',
-          'Proj_Code',
-          'Donor_Principal',
-          'Implementing_Partners',
-          'Start_Year',
-          'End_Year',
-          'Land_Area',
-          'Trees_mgmt',
-          'Tree_Density',
-          'Practice',
-          'Pic_url',
-        ];
+        const displayFields = ['ObjectId', 'Proj_Code', 'Proj_Status'];
 
         Object.entries(projectData).forEach(function (item) {
           const [key, value] = item;
+          // Display project image
           if (key === 'Pic_url') {
             value
               ? (projectImage.src = value)
-              : (projectImage.src = '../images/no-image-available.jpg');
+              : (projectImage.src = '../../images/no-image-available.jpg');
           }
-
-          if (ignoredFields.includes(key)) {
-            return;
+          // Display project information
+          if (displayFields.includes(key)) {
+            const subHeader = document.createElement('h3');
+            const content = document.createElement('p');
+            subHeader.innerHTML = key;
+            content.innerHTML = value ? value : 'None';
+            projectDataContainer.appendChild(subHeader);
+            projectDataContainer.appendChild(content);
           }
-
-          if (!value) {
-            return;
-          }
-
-          const subHeader = document.createElement('h3');
-          const content = document.createElement('p');
-          subHeader.innerHTML = key;
-          content.innerHTML = value;
-          projectDataElement.appendChild(subHeader);
-          projectDataElement.appendChild(content);
         });
+
+        // Create a link to "Project Details"
+        const projectLink = document.createElement('a');
+        projectLink.href = `./?id=${projectData.ObjectId}`;
+        const projectDetailsBtn = document.createElement('button');
+        projectDetailsBtn.innerHTML = 'Project Details';
+        projectDetailsBtn.classList.add('project-details-btn');
+        projectLink.appendChild(projectDetailsBtn);
+        projectDataContainer.appendChild(projectLink);
       }
     });
   });
 
-  //SECTION: Get the Parameter Values
+  //SECTION: Display Project Information With ID Parameter
+  const displayFields = [
+    'Description',
+    'Organisation',
+    'Nation',
+    'District',
+    'x',
+    'y',
+    'Site_Code',
+    'Proj_Status',
+    'Project_Description',
+    'Project_Value',
+    'Proj_Currency',
+    'Donor_Principal',
+    'Men_Trained',
+    'Women_Trained',
+    'People_Trained',
+    'DirectBeneficiaries_HH',
+    'InDirectBeneficiaries_HH',
+    'Implementing_Partners',
+    'Start_Year',
+    'End_Year',
+    'Land_Area',
+    'C02e_To_Date',
+    'Budget',
+    'Video',
+    'Link',
+    'Trees_mgmt',
+    'Tree_Density',
+    'Practice',
+    'ObjectId',
+  ];
 
-  const displayProjectData = (data) => {
-    // Zoom to selected point
+  // Display a Project with ID
+  const generateAProject = (data) => {
+    // Zoom to selected project
     const opts = {
       duration: 3000, // Duration of animation will be 5 seconds
     };
@@ -569,69 +580,72 @@ require([
       opts
     );
 
-    const ignoredFields = [];
-    projectDataElement.innerHTML = '';
+    projectDataContainer.innerHTML = '';
     Object.entries(data).forEach(function (item) {
       const [key, value] = item;
+
+      //Display project image
       if (key === 'Pic_url') {
         value
           ? (projectImage.src = value)
           : (projectImage.src = '../../images/no-image-available.jpg');
       }
 
-      if (ignoredFields.includes(key)) {
-        return;
+      // Display project information
+      if (displayFields.includes(key)) {
+        const subHeader = document.createElement('h3');
+        const content = document.createElement('p');
+        subHeader.innerHTML = key;
+        content.innerHTML = value ? value : 'None';
+        projectDataContainer.appendChild(subHeader);
+        projectDataContainer.appendChild(content);
       }
-
-      if (!value) {
-        return;
-      }
-
-      const subHeader = document.createElement('h3');
-      const content = document.createElement('p');
-      subHeader.innerHTML = key;
-      content.innerHTML = value;
-      projectDataElement.appendChild(subHeader);
-      projectDataElement.appendChild(content);
     });
   };
 
-  const getProjectData = async () => {
-    const params = new URLSearchParams(window.location.search);
-    const projectID = params.get('id');
-    console.log(projectID);
-
-    const displayFields = [
-      'Description',
-      'Nation',
-      'Organisation',
-      'DirectBeneficiaries_HH',
-      'x',
-      'y',
-      'Proj_Status',
-      'Proj_Code',
-      'Donor_Principal',
-      'Implementing_Partners',
-      'Start_Year',
-      'End_Year',
-      'Land_Area',
-      'Trees_mgmt',
-      'Tree_Density',
-      'Practice',
-      'Pic_url',
-    ];
-
-    const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId=${projectID}&outFields=${displayFields.join()}&f=json`;
-
+  // Display Project List
+  const generateAllProjects = async () => {
+    const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId<>-1&outFields=ObjectId&f=json`;
     const response = await fetch(apiURL);
     const data = await response.json();
-    const projectData = data.features[0].attributes;
-    console.log('responseeee', projectData);
+    const allObjectIDs = data.features;
+    allObjectIDs.forEach((ObjectID) => {
+      const id = ObjectID.attributes.ObjectId;
 
-    displayProjectData(projectData);
+      const subHeader = document.createElement('h3');
+      subHeader.innerHTML = 'ObjectId: ' + id;
+      projectDataContainer.appendChild(subHeader);
+
+      const projectLink = document.createElement('a');
+      projectLink.href = `./?id=${id}`;
+      const projectDetailsBtn = document.createElement('button');
+      projectDetailsBtn.innerHTML = 'Project Details';
+      projectDetailsBtn.classList.add('project-details-btn');
+      projectLink.appendChild(projectDetailsBtn);
+      projectDataContainer.appendChild(projectLink);
+    });
   };
 
-  getProjectData();
+  // Display Content for Projects Page
+  const displayProjectContent = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const projectID = params.get('id');
+    if (!projectID) {
+      console.log('Homepage');
+      generateAllProjects();
+    } else {
+      console.log(projectID);
+      const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId=${projectID}&outFields=${displayFields.join()}&f=json`;
+
+      const response = await fetch(apiURL);
+      const data = await response.json();
+      const projectData = data.features[0].attributes;
+
+      generateAProject(projectData);
+    }
+  };
+
+  displayProjectContent();
 
   // SECTION: Hide/Show Project Button
   const sidebarButton = document.querySelector('.sidebar-btn');
@@ -644,5 +658,5 @@ require([
 
   // SECTION: Reset Map View Button
   const resetMapViewButton = document.querySelector('.reset-view-btn');
-  resetMapViewButton.addEventListener('click', getProjectData);
+  resetMapViewButton.addEventListener('click', displayProjectContent);
 });
