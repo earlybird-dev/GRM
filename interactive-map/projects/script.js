@@ -554,9 +554,6 @@ require([
   });
 
   //SECTION: Get the Parameter Values
-  const params = new URLSearchParams(window.location.search);
-  const projectID = params.get('id');
-  console.log(projectID);
 
   const displayProjectData = (data) => {
     // Zoom to selected point
@@ -599,7 +596,11 @@ require([
     });
   };
 
-  const getProjectData = async (id) => {
+  const getProjectData = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const projectID = params.get('id');
+    console.log(projectID);
+
     const displayFields = [
       'Description',
       'Nation',
@@ -630,8 +631,7 @@ require([
     displayProjectData(projectData);
   };
 
-  const projectData = getProjectData(projectID);
-  console.log(projectData);
+  getProjectData();
 
   // SECTION: Hide/Show Project Button
   const sidebarButton = document.querySelector('.sidebar-btn');
@@ -644,22 +644,5 @@ require([
 
   // SECTION: Reset Map View Button
   const resetMapViewButton = document.querySelector('.reset-view-btn');
-  resetMapViewButton.addEventListener('click', function () {
-    projectImage.src = '../images/GRM.png';
-    projectDataElement.innerHTML = `<h2>GRM Interactive Dashboard</h2>
-    <p>
-      A key focus of the GRM is to provide clear visibility to existing
-      and planned land restoration projects. Through the integration of
-      a broad range of data from restoration at multiple scales, we aim
-      to increase accessibility and strengthen capacity for greater
-      collaboration, knowledge sharing, and impact on the ground.
-    </p>`;
-    view.goTo(
-      {
-        center: CENTER_POINT,
-        zoom: GLOBAL_ZOOM,
-      },
-      opts
-    );
-  });
+  resetMapViewButton.addEventListener('click', getProjectData);
 });
