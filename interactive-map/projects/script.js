@@ -580,6 +580,8 @@ require([
       opts
     );
 
+    projectDataContainer.innerHTML = '';
+
     // Create See All Projects Button
     const allProjectLink = document.createElement('a');
     allProjectLink.href = `./`;
