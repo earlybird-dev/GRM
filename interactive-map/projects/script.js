@@ -580,7 +580,15 @@ require([
       opts
     );
 
-    projectDataContainer.innerHTML = '';
+    // Create See All Projects Button
+    const allProjectLink = document.createElement('a');
+    allProjectLink.href = `./`;
+    const seeAllProjectBtn = document.createElement('button');
+    seeAllProjectBtn.innerHTML = 'See All Projects';
+    seeAllProjectBtn.classList.add('project-details-btn');
+    allProjectLink.appendChild(seeAllProjectBtn);
+    projectDataContainer.appendChild(allProjectLink);
+
     Object.entries(data).forEach(function (item) {
       const [key, value] = item;
 
