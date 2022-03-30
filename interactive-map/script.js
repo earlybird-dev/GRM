@@ -499,7 +499,7 @@ require([
         header.innerHTML = 'About Project';
         projectDataElement.appendChild(header);
         const projectLink = document.createElement('a');
-        projectLink.href = `http://127.0.0.1:5500/interactive-map/projects/?id=${projectData.ObjectId}`;
+        projectLink.href = `https://trungha-ngx.github.io/GRM/interactive-map/projects/?id=${projectData.ObjectId}`;
         // projectLink.target = '_blank';
         const projectDetailsBtn = document.createElement('button');
         projectDetailsBtn.innerHTML = 'Project Details';
