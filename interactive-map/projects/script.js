@@ -560,7 +560,6 @@ require([
 
   const displayProjectData = (data) => {
     // Zoom to selected point
-
     const opts = {
       duration: 3000, // Duration of animation will be 5 seconds
     };
@@ -572,6 +571,7 @@ require([
       },
       opts
     );
+
     const ignoredFields = [];
     projectDataElement.innerHTML = '';
     Object.entries(data).forEach(function (item) {
@@ -579,7 +579,7 @@ require([
       if (key === 'Pic_url') {
         value
           ? (projectImage.src = value)
-          : (projectImage.src = '../images/no-image-available.jpg');
+          : (projectImage.src = '../../images/no-image-available.jpg');
       }
 
       if (ignoredFields.includes(key)) {
@@ -625,7 +625,7 @@ require([
     const response = await fetch(apiURL);
     const data = await response.json();
     const projectData = data.features[0].attributes;
-    console.log('response heeee', projectData);
+    console.log('responseeee', projectData);
 
     displayProjectData(projectData);
   };
