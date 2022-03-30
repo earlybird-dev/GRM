@@ -98,12 +98,12 @@ nav ul {
   align-items: center;
 } */
 
-.see-project-btn {
+.project-details-btn {
   border: 1px solid black;
   /* background-color: #555; */
 }
 
-.see-project-btn:active {
+.project-details-btn:active {
   transform: scale(0.98);
 }
 

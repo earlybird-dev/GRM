@@ -326,24 +326,41 @@ require([
     url: 'https://services9.arcgis.com/h8H4fa0wsbwmIt3l/arcgis/rest/services/GRM_Projects/FeatureServer/0',
     renderer: projectMarkers,
     labelingInfo: [projectLabels],
-    popupTemplate: projectPopup,
+    // Disable/Enable popup
+    // popupTemplate: projectPopup,
     featureReduction: clusterConfig,
     outFields: [
       'Nation',
       'Organisation',
-      'Description',
+      'Site_Code',
+      'Proj_Status',
+      'Project_Description',
+      'Project_Value',
+      'Proj_Currency',
+      'Donor_Principal',
+      'Men_Trained',
+      'Women_Trained',
+      'People_Trained',
+      'DirectBeneficiaries_HH',
+      'InDirectBeneficiaries_HH',
+      'District',
+      'Pic_url',
       'x',
       'y',
-      'Proj_Status',
-      'Donor_Principal',
       'Implementing_Partners',
       'Start_Year',
       'End_Year',
       'Land_Area',
+      'C02e_To_Date',
+      'Budget',
+      'Description',
+      'Video',
+      'Link',
       'Trees_mgmt',
       'Tree_Density',
       'Practice',
-      'Pic_url',
+      'Logo',
+      'ObjectId',
     ],
   });
 
@@ -455,7 +472,7 @@ require([
     duration: 1000, // Duration of animation will be 5 seconds
   };
 
-  const projectDataElement = document.querySelector('.project-data');
+  const projectDataContainer = document.querySelector('.project-data');
   const projectImage = document.querySelector('.sidebar-container img');
   // Get the data from the click event
   view.on('click', function (event) {
@@ -493,133 +510,43 @@ require([
         );
 
         // Display project data in the project tab
-        projectDataElement.innerHTML = '';
+        projectDataContainer.innerHTML = '';
         projectImage.src = '';
         const header = document.createElement('h2');
         header.innerHTML = 'About Project';
-        projectDataElement.appendChild(header);
-
-        const ignoredFields = [
-          'Description',
-          'Nation',
-          'Organisation',
-          'DirectBeneficiaries_HH',
-          'x',
-          'y',
-          'Proj_Status',
-          'Proj_Code',
-          'Donor_Principal',
-          'Implementing_Partners',
-          'Start_Year',
-          'End_Year',
-          'Land_Area',
-          'Trees_mgmt',
-          'Tree_Density',
-          'Practice',
-          'Pic_url',
-        ];
+        projectDataContainer.appendChild(header);
+        const displayFields = ['ObjectId', 'Proj_Code', 'Proj_Status'];
 
         Object.entries(projectData).forEach(function (item) {
           const [key, value] = item;
+          // Display project image
           if (key === 'Pic_url') {
             value
               ? (projectImage.src = value)
               : (projectImage.src = '../images/no-image-available.jpg');
           }
-
-          if (ignoredFields.includes(key)) {
-            return;
+          // Display project information
+          if (displayFields.includes(key)) {
+            const subHeader = document.createElement('h3');
+            const content = document.createElement('p');
+            subHeader.innerHTML = key;
+            content.innerHTML = value ? value : 'None';
+            projectDataContainer.appendChild(subHeader);
+            projectDataContainer.appendChild(content);
           }
-
-          if (!value) {
-            return;
-          }
-
-          const subHeader = document.createElement('h3');
-          const content = document.createElement('p');
-          subHeader.innerHTML = key;
-          content.innerHTML = value;
-          projectDataElement.appendChild(subHeader);
-          projectDataElement.appendChild(content);
         });
 
+        // Create a link to "Project Details"
         const projectLink = document.createElement('a');
-        projectLink.href = `https://trungha-ngx.github.io/GRM/interactive-map/projects/?id=${projectData.ObjectId}`;
+        projectLink.href = `./projects/?id=${projectData.ObjectId}`;
         const projectDetailsBtn = document.createElement('button');
         projectDetailsBtn.innerHTML = 'Project Details';
-        projectDetailsBtn.classList.add('see-project-page-btn');
+        projectDetailsBtn.classList.add('project-details-btn');
         projectLink.appendChild(projectDetailsBtn);
-        projectDataElement.appendChild(projectLink);
+        projectDataContainer.appendChild(projectLink);
       }
     });
   });
-
-  //SECTION: Get the Parameter Values
-  //   const params = new URLSearchParams(window.location.search);
-  //   const projectID = params.get('id');
-  //   console.log(projectID);
-
-  //   const displayProjectData = (data) => {
-  //     const ignoredFields = [];
-  //     projectDataElement.innerHTML = '';
-  //     Object.entries(data).forEach(function (item) {
-  //       const [key, value] = item;
-  //       if (key === 'Pic_url') {
-  //         value
-  //           ? (projectImage.src = value)
-  //           : (projectImage.src = '../images/no-image-available.jpg');
-  //       }
-
-  //       if (ignoredFields.includes(key)) {
-  //         return;
-  //       }
-
-  //       if (!value) {
-  //         return;
-  //       }
-
-  //       const subHeader = document.createElement('h3');
-  //       const content = document.createElement('p');
-  //       subHeader.innerHTML = key;
-  //       content.innerHTML = value;
-  //       projectDataElement.appendChild(subHeader);
-  //       projectDataElement.appendChild(content);
-  //     });
-  //   };
-
-  //   const getProjectData = async (id) => {
-  //     const displayFields = [
-  //       'Description',
-  //       'Nation',
-  //       'Organisation',
-  //       'DirectBeneficiaries_HH',
-  //       'x',
-  //       'y',
-  //       'Proj_Status',
-  //       'Proj_Code',
-  //       'Donor_Principal',
-  //       'Implementing_Partners',
-  //       'Start_Year',
-  //       'End_Year',
-  //       'Land_Area',
-  //       'Trees_mgmt',
-  //       'Tree_Density',
-  //       'Practice',
-  //       'Pic_url',
-  //     ];
-
-  //     const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId=${projectID}&outFields=${displayFields.join()}&f=json`;
-
-  //     const response = await fetch(apiURL);
-  //     const data = await response.json();
-  //     const projectData = data.features[0].attributes;
-  //     console.log('response heeee', projectData);
-
-  //     displayProjectData(projectData);
-  //   };
-
-  //   const projectData = getProjectData(projectID);
-  //   console.log(projectData);
 
   // SECTION: Hide/Show Project Button
   const sidebarButton = document.querySelector('.sidebar-btn');
@@ -634,14 +561,18 @@ require([
   const resetMapViewButton = document.querySelector('.reset-view-btn');
   resetMapViewButton.addEventListener('click', function () {
     projectImage.src = '../images/GRM.png';
-    projectDataElement.innerHTML = `<h2>GRM Interactive Dashboard</h2>
+    projectDataContainer.innerHTML = `<h2>GRM Interactive Dashboard</h2>
     <p>
       A key focus of the GRM is to provide clear visibility to existing
       and planned land restoration projects. Through the integration of
       a broad range of data from restoration at multiple scales, we aim
       to increase accessibility and strengthen capacity for greater
       collaboration, knowledge sharing, and impact on the ground.
-    </p>`;
+    </p>
+    <a href="./projects">
+    <button>All Projects</button>
+  </a>
+`;
     view.goTo(
       {
         center: CENTER_POINT,
