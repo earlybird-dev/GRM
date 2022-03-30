@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GRM Interactive Map</title>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.22/esri/themes/light/main.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://js.arcgis.com/4.22/"></script>
+  </head>
+  <body>
+    <!-- <nav>
+      <ul>
+        <li>Home</li>
+        <li>About</li>
+        <li>Contact</li>
+      </ul>
+    </nav> -->
+    <main>
+      <div class="main-container">
+        <div class="sidebar-container">
+          <div class="placeholder">
+            <img src="../../images/GRM.png" alt="" />
+          </div>
+          <div class="project-data"></div>
+        </div>
+        <div class="map-container" id="map-container">
+          <div class="project-info">
+            <span id="project-code"></span> <br />
+            <span id="project-status"></span> <br />
+            <span id="sites"></span> <br />
+          </div>
+          <button title="Show / Hide Sidebar" class="btn sidebar-btn">
+            <i class="fas fa-thin fa-angles-right flip"></i>
+          </button>
+          <button title="Reset MapView" class="btn reset-view-btn">
+            <i class="fas fa-undo"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
