@@ -605,6 +605,14 @@ require([
 
   // Display Project List
   const generateAllProjects = async () => {
+    const header = document.createElement('h2');
+    header.innerHTML = 'All Projects';
+    projectDataContainer.appendChild(header);
+
+    const search = document.createElement('input');
+    search.placeholder = 'Search';
+    projectDataContainer.appendChild(search);
+
     const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId<>-1&outFields=ObjectId&f=json`;
     const response = await fetch(apiURL);
     const data = await response.json();
