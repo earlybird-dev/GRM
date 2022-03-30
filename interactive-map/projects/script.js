@@ -617,6 +617,8 @@ require([
   // Display Project List
   const generateAllProjects = async () => {
     projectDataContainer.innerHTML = '';
+    projectImage.src = '../../images/GRM.png';
+
     const header = document.createElement('h2');
     header.innerHTML = 'All Projects';
     projectDataContainer.appendChild(header);
