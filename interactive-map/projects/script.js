@@ -563,6 +563,7 @@ require([
     'Tree_Density',
     'Practice',
     'ObjectId',
+    'Pic_url',
   ];
 
   // Display a Project with ID
