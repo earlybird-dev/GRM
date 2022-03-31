@@ -563,6 +563,7 @@ require([
     'Tree_Density',
     'Practice',
     'ObjectId',
+    'Pic_url',
   ];
 
   // Display a Project with ID
@@ -579,6 +580,8 @@ require([
       },
       opts
     );
+
+    projectDataContainer.innerHTML = '';
 
     // Create See All Projects Button
     const allProjectLink = document.createElement('a');
@@ -613,13 +616,24 @@ require([
 
   // Display Project List
   const generateAllProjects = async () => {
+    projectDataContainer.innerHTML = '';
+    projectImage.src = '../../images/GRM.png';
+
     const header = document.createElement('h2');
     header.innerHTML = 'All Projects';
     projectDataContainer.appendChild(header);
 
-    const search = document.createElement('input');
-    search.placeholder = 'Search';
-    projectDataContainer.appendChild(search);
+    const searchContainer = document.createElement('div');
+    const input = document.createElement('input');
+    const submit = document.createElement('input');
+    // input.placeholder = 'Search';
+    input.setAttribute('id', 'search');
+    submit.setAttribute('type', 'submit');
+    submit.setAttribute('value', 'Search');
+
+    searchContainer.appendChild(input);
+    searchContainer.appendChild(submit);
+    projectDataContainer.appendChild(searchContainer);
 
     const apiURL = `https://services9.arcgis.com/h8H4fa0wsbwmIt3l/ArcGIS/rest/services/GRM_Projects/FeatureServer/0/query?where=ObjectId<>-1&outFields=ObjectId&f=json`;
     const response = await fetch(apiURL);
@@ -662,6 +676,12 @@ require([
   };
 
   displayProjectContent();
+
+  // Display Queried Projects
+  const searchInput = document.getElementById('search');
+  searchInput.addEventListener('submit', () => {
+    console.log(searchInput.value);
+  });
 
   // SECTION: Hide/Show Project Button
   const sidebarButton = document.querySelector('.sidebar-btn');
