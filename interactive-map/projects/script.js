@@ -678,7 +678,6 @@ require([
   displayProjectContent();
 
   // Display Queried Projects
-
   const searchInput = document.getElementById('search');
   searchInput.addEventListener('submit', () => {
     console.log(searchInput.value);
