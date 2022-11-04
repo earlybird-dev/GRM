@@ -1,3 +1,3 @@
 # GRM-Interactive-Map
 
-Website: https://trungha-ngx.github.io/GRM/
+Website: [https://earlybird-dev.github.io/GRM/](https://earlybird-dev.github.io/GRM/)
